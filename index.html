@@ -59,13 +59,21 @@ input.ctl{cursor:text;font-size:16px}input[type=date].ctl{cursor:pointer;font-si
 .roles{--n:3}.roles button{padding:0 14px;display:inline-flex;align-items:center;justify-content:center;gap:7px}
 .num{font:500 11px "JetBrains Mono",monospace;color:var(--sub);background:light-dark(#e5e7eb,#243045);border-radius:999px;padding:1px 7px}
 
-main{padding:18px 24px 40px;max-width:1148px;margin:0 auto}
+main{padding:18px 24px 40px;max-width:1440px;margin:0 auto}
 .top{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;color:var(--sub)}
 .top span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.top b{color:var(--ink);font-weight:600}
 .dot{width:8px;height:8px;border-radius:50%;flex:none;display:inline-block}
 .panel{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 1px 2px rgba(17,24,39,.04);overflow:hidden;transition:background .25s var(--ease)}
 .sec{display:flex;align-items:center;gap:8px;padding:14px 18px 6px;font:600 13px "Space Grotesk",Inter,sans-serif;color:var(--sub)}
-.row{display:grid;grid-template-columns:minmax(0,1fr) 210px 270px;gap:10px 16px;align-items:center;padding:7px 18px;transition:background .15s}
+.row{display:grid;grid-template-columns:minmax(150px,1fr) 252px 270px minmax(340px,1.5fr);gap:10px 16px;align-items:center;padding:7px 18px;transition:background .15s}
+.extra{display:flex;gap:8px;min-width:0}
+.chan,.nbox{height:38px;border:1px solid transparent;background:var(--track);border-radius:999px;padding:0 14px;font-size:13px;color:var(--ink);transition:background .2s,border-color .2s,box-shadow .2s}
+.chan{flex:0 0 190px;max-width:190px;cursor:pointer;appearance:none;-webkit-appearance:none;padding-right:30px;color:var(--sub);text-overflow:ellipsis;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239ca3af' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.chan.set{color:var(--ink);font-weight:600;background-color:var(--thumb);box-shadow:var(--shadow)}
+.nbox{flex:1 1 140px;min-width:0}.nbox::placeholder{color:var(--sub)}
+.chan:hover,.nbox:hover{border-color:var(--line)}
+.chan:focus,.nbox:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(234,88,12,.15);background-color:var(--surface)}
 .row:hover{background:var(--hover)}
 .row+.row{box-shadow:inset 0 1px 0 var(--line)}
 .who{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600}
@@ -93,12 +101,13 @@ details.manage summary{cursor:pointer;font:600 14px "Space Grotesk",Inter,sans-s
 .gcard .go{width:100%;height:44px;margin-top:18px;border:0;border-radius:10px;background:var(--orange);color:#fff;font-weight:600;font-size:15px;cursor:pointer;transition:background .2s}
 .gcard .go:hover{background:#c2410c}.gcard .go[disabled]{opacity:.6;cursor:default}
 .gerr{min-height:20px;margin-top:12px;color:#dc2626;font-size:13px}
-.signout{height:30px;padding:0 12px;border-radius:8px;border:1px solid #374151;background:transparent;color:#d1d5db;cursor:pointer;font-size:12.5px}
+.signout{white-space:nowrap;flex:none;height:30px;padding:0 12px;border-radius:8px;border:1px solid #374151;background:transparent;color:#d1d5db;cursor:pointer;font-size:12.5px}
 .signout:hover{color:#fff;border-color:#6b7280}
 .hide{display:none!important}
-@media(max-width:820px){.row{grid-template-columns:1fr 1fr;padding:10px 18px}.who{grid-column:1/-1}}
-@media(max-width:640px){header{padding:0 14px}header .tab{display:none}.bar,main{padding-left:14px;padding-right:14px}
-.search{max-width:none}.roles{width:100%}.right{margin-left:0;width:100%;justify-content:space-between}.row{grid-template-columns:1fr}.seg button{padding:0 6px}}
+@media(max-width:1260px){.row{grid-template-columns:252px 270px minmax(0,1fr);padding:10px 18px}.who{grid-column:1/-1}}
+@media(max-width:820px){.row{grid-template-columns:1fr 1fr}.extra{grid-column:1/-1}}
+@media(max-width:640px){header{padding:0 14px;gap:10px}header h1{font-size:15px;overflow:hidden;text-overflow:ellipsis}header .tab{display:none}.bar,main{padding-left:14px;padding-right:14px}
+.search{max-width:none}.roles{width:100%}.right{margin-left:0;width:100%;justify-content:space-between}.row{grid-template-columns:1fr}.seg button{padding:0 6px}.chan{flex-basis:46%;max-width:none}}
 @media(prefers-reduced-motion:reduce){*,*::before{transition:none!important}}
 </style>
 </head>
@@ -169,7 +178,8 @@ const niceDate=k=>new Date(k+'T12:00:00Z').toLocaleDateString('en-IN',{weekday:'
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const $=id=>document.getElementById(id);
 const initials=n=>String(n).trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
-const STATUS=[['free','Free'],['busy','Busy'],['leave','Leave']];
+const STATUS=[['free','Free'],['busy','Occupied'],['leave','Leave']];
+const CHANNELS=['Azzy','Casting Content','Clear Tax','Google GDG','Groww Mutual Funds','Groww-Main','HomeLane','HomeLane Ads','How They Made It by Groww','InCred Money','Kuvera','Leap Scholar (Big Leap)','Onto','Perccent Money','Perspective By InCred','Rayl','Trading w Groww','Unwired'];
 const SLOTS=[['full','Full day'],['first','1st half'],['second','2nd half']];
 const ROLES=[['all','Everyone'],['lead','Pod leads'],['editor','Editors']];
 const SC={free:'#10b981',busy:'#ef4444',leave:'#7c3aed',none:'#9ca3af'};
@@ -204,7 +214,7 @@ const rolesOf=p=>Array.isArray(p.roles)?p.roles:[];
 const isLead=p=>rolesOf(p).includes('lead');
 const isEditor=p=>rolesOf(p).includes('editor')||!isLead(p);
 const ord=p=>typeof p.order==='number'?p.order:1e15;
-const markOf=id=>{const m={...(day[id]||{}),...(pending[id]||{})};return{s:['free','busy','leave'].includes(m.s)?m.s:null,t:['full','first','second'].includes(m.t)?m.t:null}};
+const markOf=id=>{const m={...(day[id]||{}),...(pending[id]||{})};return{s:['free','busy','leave'].includes(m.s)?m.s:null,t:['full','first','second'].includes(m.t)?m.t:null,c:typeof m.c==='string'?m.c:'',n:typeof m.n==='string'?m.n:''}};
 const byOrder=(a,b)=>ord(a)-ord(b)||a.name.localeCompare(b.name);
 
 function segHTML(kind,id,name,opts){
@@ -219,7 +229,10 @@ function paintSeg(el,v,opts){
 function paintRows(){
   document.querySelectorAll('#list .row').forEach(r=>{const m=markOf(r.dataset.id);
     paintSeg(r.querySelector('[data-kind=s]'),m.s,STATUS);paintSeg(r.querySelector('[data-kind=t]'),m.t,SLOTS);
-    r.querySelector('.av').style.setProperty('--sd',SC[m.s||'none'])});
+    r.querySelector('.av').style.setProperty('--sd',SC[m.s||'none']);
+    const ch=r.querySelector('.chan'),nt=r.querySelector('.nbox');
+    if(ch&&document.activeElement!==ch){if(m.c&&![...ch.options].some(o=>o.value===m.c)){const o=document.createElement('option');o.textContent=m.c;ch.append(o)}ch.value=m.c;ch.classList.toggle('set',!!m.c)}
+    if(nt&&document.activeElement!==nt&&!noteTimers[r.dataset.id])nt.value=m.n});
 }
 
 function render(){
@@ -237,14 +250,14 @@ function render(){
   const eds=role==='editor'?shown.sort(byOrder):role==='lead'?[]:shown.filter(p=>!isLead(p)).sort(byOrder);
 
   const c={free:0,busy:0,leave:0,none:0};inRole.forEach(p=>c[markOf(p.id).s||'none']++);
-  const h=loaded?[['free','Free'],['busy','Busy'],['leave','On leave'],['none','Not marked']].map(([k,l])=>`<span><i class="dot" style="background:${SC[k]}"></i><b>${c[k]}</b> ${l}</span>`).join(''):'';
+  const h=loaded?[['free','Free'],['busy','Occupied'],['leave','On leave'],['none','Not marked']].map(([k,l])=>`<span><i class="dot" style="background:${SC[k]}"></i><b>${c[k]}</b> ${l}</span>`).join(''):'';
   const tail=lastAt?'Last updated '+new Date(lastAt).toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit',timeZone:TZ})+(lastBy?' by '+lastBy:''):'';
   $('top').innerHTML=h+(tail?`<span>${esc(tail)}</span>`:'');
   $('count').textContent=niceDate(date)+(date===todayKey()?' · Today':'');
 
   const key=[loaded,role,q,leads.map(p=>p.id+p.name+p.fullName).join(),eds.map(p=>p.id+p.name+p.fullName).join()].join('|');
   if(key!==listKey){listKey=key;
-    const row=p=>`<div class="row" data-id="${esc(p.id)}"><div class="who"><span class="av">${esc(initials(p.name))}</span><span>${esc(p.name)}${p.fullName&&p.fullName!==p.name?`<small>${esc(p.fullName)}</small>`:''}</span></div>${segHTML('s',p.id,p.name,STATUS)}${segHTML('t',p.id,p.name,SLOTS)}</div>`;
+    const row=p=>`<div class="row" data-id="${esc(p.id)}"><div class="who"><span class="av">${esc(initials(p.name))}</span><span>${esc(p.name)}${p.fullName&&p.fullName!==p.name?`<small>${esc(p.fullName)}</small>`:''}</span></div>${segHTML('s',p.id,p.name,STATUS)}${segHTML('t',p.id,p.name,SLOTS)}<div class="extra"><select class="chan" data-chan="${esc(p.id)}" aria-label="${esc(p.name)} channel"><option value="">Select channel</option>${CHANNELS.map(c=>`<option>${esc(c)}</option>`).join('')}</select><input class="nbox" data-note="${esc(p.id)}" type="text" maxlength="500" placeholder="Add a note…" aria-label="${esc(p.name)} note"></div></div>`;
     $('list').innerHTML=!loaded?'<div class="empty">Loading…</div>'
      :!active.length?'<div class="empty">No people yet. Add them under “Manage people” below.</div>'
      :!leads.length&&!eds.length?'<div class="empty">Nobody matches that search.</div>'
@@ -286,7 +299,13 @@ async function flush(){
   }catch(e){if(e.message!=='auth')notice("Couldn't save that change. Check your connection and try again.");ids.forEach(id=>delete pending[id]);render()}
   writing=false;if(Object.keys(pending).length)flush();
 }
-function setMark(id,patch){const c=markOf(id);pending[id]={s:c.s,t:c.t,...patch};render();flush()}
+function setMark(id,patch){const c=markOf(id);pending[id]={s:c.s,t:c.t,c:c.c,n:c.n,...patch};render();flush()}
+const noteTimers={};
+function saveNote(el){const id=el.dataset.note;clearTimeout(noteTimers[id]);delete noteTimers[id];if(markOf(id).n!==el.value)setMark(id,{n:el.value})}
+document.addEventListener('change',e=>{const el=e.target;if(el.classList?.contains('chan')){setMark(el.dataset.chan,{c:el.value});el.blur()}});
+document.addEventListener('input',e=>{const el=e.target;if(el.classList?.contains('nbox')){const id=el.dataset.note;clearTimeout(noteTimers[id]);noteTimers[id]=setTimeout(()=>saveNote(el),800)}});
+document.addEventListener('focusout',e=>{const el=e.target;if(el.classList?.contains('nbox')&&noteTimers[el.dataset.note])saveNote(el)});
+document.addEventListener('keydown',e=>{const el=e.target;if(el.classList?.contains('nbox')&&e.key==='Enter'){saveNote(el);el.blur()}});
 function go(k){if(!k||k===date)return;date=k;Object.keys(pending).forEach(i=>delete pending[i]);loaded=false;listKey='';render();load()}
 async function peopleCall(action,body){try{const j=await api(action,body);people=j.people||people;render()}catch(e){if(e.message!=='auth')notice("Couldn't update the people list.")}}
 
@@ -298,7 +317,7 @@ document.addEventListener('click',e=>{
   else if(t.dataset.role){role=t.dataset.role;render()}
   else if(t.dataset.rm){if(t.dataset.armed){peopleCall('removePerson',{id:t.dataset.rm})}
     else{t.dataset.armed='1';t.textContent='Confirm remove';setTimeout(()=>{if(t.isConnected){delete t.dataset.armed;t.textContent='Remove'}},4000)}}
-  else if(t.id==='bulk'){document.querySelectorAll('#list .row').forEach(r=>{const id=r.dataset.id;if(!markOf(id).s)pending[id]={s:'free',t:'full'}});render();flush()}
+  else if(t.id==='bulk'){document.querySelectorAll('#list .row').forEach(r=>{const id=r.dataset.id;{const m=markOf(id);if(!m.s)pending[id]={s:'free',t:'full',c:m.c,n:m.n}}});render();flush()}
 });
 $('prev').onclick=()=>go(shift(date,-1));$('next').onclick=()=>go(shift(date,1));$('today').onclick=()=>go(todayKey());
 $('date').onchange=e=>go(e.target.value);
