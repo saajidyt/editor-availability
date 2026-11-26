@@ -22,7 +22,7 @@
 --busy:#ef4444;--busyT:light-dark(#fee2e2,#45191c);--busyInk:light-dark(#b91c1c,#fca5a5);
 --leave:#7c3aed;--leaveT:light-dark(#ede9fe,#2a1a4f);--leaveInk:light-dark(#6d28d9,#c4b5fd);
 --thumb:light-dark(#ffffff,#2a3446);--shadow:0 1px 2px rgba(17,24,39,.08),0 1px 1px rgba(17,24,39,.04);
---ease:cubic-bezier(.3,.7,.2,1)}
+--ease:cubic-bezier(.3,.7,.2,1);--shadowLg:light-dark(0 20px 50px rgba(0,0,0,.18),0 24px 60px rgba(0,0,0,.65))}
 :root[data-mode=light]{color-scheme:light}:root[data-mode=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 body{margin:0;background:var(--bg);color:var(--ink);font:13px/1.45 Inter,system-ui,sans-serif;overflow-x:clip;transition:background .25s var(--ease),color .25s var(--ease)}
@@ -68,7 +68,7 @@ main{padding:18px 24px 40px;max-width:1440px;margin:0 auto}
 .row{display:grid;grid-template-columns:minmax(150px,1fr) 252px 270px minmax(340px,1.5fr);gap:10px 16px;align-items:center;padding:7px 18px;transition:background .15s}
 .extra{display:flex;gap:8px;min-width:0}
 .chan,.nbox{height:38px;border:1px solid transparent;background:var(--track);border-radius:999px;padding:0 14px;font-size:13px;color:var(--ink);transition:background .2s,border-color .2s,box-shadow .2s}
-.chan{flex:0 0 190px;max-width:190px;cursor:pointer;appearance:none;-webkit-appearance:none;padding-right:30px;color:var(--sub);text-overflow:ellipsis;
+.chan{flex:0 0 200px;max-width:200px;cursor:pointer;appearance:none;-webkit-appearance:none;padding-right:30px;color:var(--sub);text-overflow:ellipsis;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239ca3af' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
 .chan.set{color:var(--ink);font-weight:600;background-color:var(--thumb);box-shadow:var(--shadow)}
 .nbox{flex:1 1 140px;min-width:0}.nbox::placeholder{color:var(--sub)}
@@ -104,10 +104,36 @@ details.manage summary{cursor:pointer;font:600 14px "Space Grotesk",Inter,sans-s
 .signout{white-space:nowrap;flex:none;height:30px;padding:0 12px;border-radius:8px;border:1px solid #374151;background:transparent;color:#d1d5db;cursor:pointer;font-size:12.5px}
 .signout:hover{color:#fff;border-color:#6b7280}
 .hide{display:none!important}
+/* motion, matching the Pipeline Tracker */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes nsIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.enter .row,.enter .sec{animation:fadeUp .35s ease both;animation-delay:calc(var(--i,0)*18ms)}
+.top>span{animation:fadeUp .35s ease both}
+.gcard{animation:pop .35s cubic-bezier(.2,.8,.2,1) both}
+/* channel logos */
+.chl{width:18px;height:18px;border-radius:5px;object-fit:contain;flex:none;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;line-height:1;background:#fff}
+.chanwrap{position:relative;flex:0 0 200px;max-width:200px;display:flex}
+.chanwrap .chl{position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;animation:nsIn .2s ease-out}
+.chanwrap .chan{flex:1;max-width:none}
+.chanwrap.haslogo .chan{padding-left:36px}
+/* styled dropdown, same as the Pipeline Tracker */
+.ns-pop{position:fixed;z-index:10000;background:var(--surface);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadowLg);padding:4px;max-width:min(360px,calc(100vw - 16px));animation:nsIn .12s ease-out}
+.ns-q{width:100%;height:34px;border:1px solid var(--line);border-radius:7px;background:var(--track);color:var(--ink);padding:0 10px;margin:2px 0 6px;font-size:13px;outline:none}
+.ns-q:focus{border-color:var(--orange)}
+.ns-list{overflow-y:auto;overscroll-behavior:contain}
+.ns-o{display:flex;align-items:center;gap:8px;min-height:32px;padding:6px 10px;border-radius:6px;font-size:13.5px;color:var(--ink);cursor:pointer;white-space:nowrap}
+.ns-o .ns-t{flex:1;overflow:hidden;text-overflow:ellipsis}
+.ns-o.hi{background:var(--track)}
+.ns-o.sel{color:var(--orange);font-weight:600}
+.ns-o.ph{color:var(--sub)}
+.ns-ck{width:15px;height:15px;flex:none;color:var(--orange)}
+.ns-empty{padding:10px;font-size:13px;color:var(--sub);text-align:center}
+select.ns-open{border-color:var(--orange)!important;box-shadow:0 0 0 3px rgba(234,88,12,.15)}
 @media(max-width:1260px){.row{grid-template-columns:252px 270px minmax(0,1fr);padding:10px 18px}.who{grid-column:1/-1}}
 @media(max-width:820px){.row{grid-template-columns:1fr 1fr}.extra{grid-column:1/-1}}
 @media(max-width:640px){header{padding:0 14px;gap:10px}header h1{font-size:15px;overflow:hidden;text-overflow:ellipsis}header .tab{display:none}.bar,main{padding-left:14px;padding-right:14px}
-.search{max-width:none}.roles{width:100%}.right{margin-left:0;width:100%;justify-content:space-between}.row{grid-template-columns:1fr}.seg button{padding:0 6px}.chan{flex-basis:46%;max-width:none}}
+.search{max-width:none}.roles{width:100%}.right{margin-left:0;width:100%;justify-content:space-between}.row{grid-template-columns:1fr}.seg button{padding:0 6px}.chanwrap{flex-basis:46%;max-width:none}}
 @media(prefers-reduced-motion:reduce){*,*::before{transition:none!important}}
 </style>
 </head>
@@ -179,6 +205,16 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const $=id=>document.getElementById(id);
 const initials=n=>String(n).trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase();
 const STATUS=[['free','Free'],['busy','Occupied'],['leave','Leave']];
+const LOGO_TILES=["#EEEDFE:#3C3489","#E1F5EE:#085041","#FAECE7:#712B13","#E6F1FB:#0C447C","#FBEAF0:#72243E","#FAEEDA:#633806","#EAF3DE:#27500A"];
+let LOGOS={};try{LOGOS=JSON.parse(localStorage.getItem('yt4b-avail-logos')||'{}')||{}}catch{}
+const chInitials=n=>{const w=String(n).trim().split(/\s+/);return(w.length>1?w[0][0]+w[1][0]:String(n).trim().slice(0,2)).toUpperCase()};
+const safeImg=v=>typeof v==='string'&&/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+\/=]+$/.test(v);
+function chLogo(n){if(!n||!String(n).trim())return'';const src=LOGOS[n];
+  if(safeImg(src))return`<img class="chl" src="${src}" alt="" aria-hidden="true">`;
+  let h=0;for(const c of String(n))h=(h*31+c.charCodeAt(0))>>>0;const[bg,fg]=LOGO_TILES[h%LOGO_TILES.length].split(':');
+  return`<span class="chl ini" style="background:${bg};color:${fg}" aria-hidden="true">${esc(chInitials(n))}</span>`}
+window.chLogo=chLogo;
+async function loadLogos(){try{const j=await api('logos');if(j.logos&&typeof j.logos==='object'){LOGOS=j.logos;try{localStorage.setItem('yt4b-avail-logos',JSON.stringify(LOGOS))}catch{};document.querySelectorAll('.chanwrap').forEach(w=>delete w.dataset.lg);paintRows()}}catch{}}
 const CHANNELS=['Azzy','Casting Content','Clear Tax','Google GDG','Groww Mutual Funds','Groww-Main','HomeLane','How They Made It by Groww','InCred Money','Kuvera','Kuvera Storytelling','Leap Scholar (Big Leap)','Onto','Perspective By InCred','Trading w Groww','Unwired'];
 const SLOTS=[['full','Full day'],['first','1st half'],['second','2nd half']];
 const ROLES=[['all','Everyone'],['lead','Pod leads'],['editor','Editors']];
@@ -231,7 +267,7 @@ function paintRows(){
     paintSeg(r.querySelector('[data-kind=s]'),m.s,STATUS);paintSeg(r.querySelector('[data-kind=t]'),m.t,SLOTS);
     r.querySelector('.av').style.setProperty('--sd',SC[m.s||'none']);
     const ch=r.querySelector('.chan'),nt=r.querySelector('.nbox');
-    if(ch&&document.activeElement!==ch){if(m.c&&![...ch.options].some(o=>o.value===m.c)){const o=document.createElement('option');o.textContent=m.c;ch.append(o)}ch.value=m.c;ch.classList.toggle('set',!!m.c)}
+    if(ch&&document.activeElement!==ch){if(m.c&&![...ch.options].some(o=>o.value===m.c)){const o=document.createElement('option');o.textContent=m.c;ch.append(o)}ch.value=m.c;ch.classList.toggle('set',!!m.c);const w=ch.parentElement;if(w.dataset.lg!==m.c){w.dataset.lg=m.c;w.querySelector('.chl')?.remove();if(m.c){w.insertAdjacentHTML('afterbegin',chLogo(m.c))}w.classList.toggle('haslogo',!!m.c)}}
     if(nt&&document.activeElement!==nt&&!noteTimers[r.dataset.id])nt.value=m.n});
 }
 
@@ -257,12 +293,14 @@ function render(){
 
   const key=[loaded,role,q,leads.map(p=>p.id+p.name+p.fullName).join(),eds.map(p=>p.id+p.name+p.fullName).join()].join('|');
   if(key!==listKey){listKey=key;
-    const row=p=>`<div class="row" data-id="${esc(p.id)}"><div class="who"><span class="av">${esc(initials(p.name))}</span><span>${esc(p.name)}${p.fullName&&p.fullName!==p.name?`<small>${esc(p.fullName)}</small>`:''}</span></div>${segHTML('s',p.id,p.name,STATUS)}${segHTML('t',p.id,p.name,SLOTS)}<div class="extra"><select class="chan" data-chan="${esc(p.id)}" aria-label="${esc(p.name)} channel"><option value="">Select channel</option>${CHANNELS.map(c=>`<option>${esc(c)}</option>`).join('')}</select><input class="nbox" data-note="${esc(p.id)}" type="text" maxlength="500" placeholder="Add a note…" aria-label="${esc(p.name)} note"></div></div>`;
+    const row=p=>`<div class="row" data-id="${esc(p.id)}"><div class="who"><span class="av">${esc(initials(p.name))}</span><span>${esc(p.name)}${p.fullName&&p.fullName!==p.name?`<small>${esc(p.fullName)}</small>`:''}</span></div>${segHTML('s',p.id,p.name,STATUS)}${segHTML('t',p.id,p.name,SLOTS)}<div class="extra"><span class="chanwrap"><select class="chan" data-chan="${esc(p.id)}" aria-label="${esc(p.name)} channel"><option value="">Select channel</option>${CHANNELS.map(c=>`<option>${esc(c)}</option>`).join('')}</select></span><input class="nbox" data-note="${esc(p.id)}" type="text" maxlength="500" placeholder="Add a note…" aria-label="${esc(p.name)} note"></div></div>`;
     $('list').innerHTML=!loaded?'<div class="empty">Loading…</div>'
      :!active.length?'<div class="empty">No people yet. Add them under “Manage people” below.</div>'
      :!leads.length&&!eds.length?'<div class="empty">Nobody matches that search.</div>'
      :(leads.length?`<div class="sec">Pod leads <span class="num">${leads.length}</span></div>`+leads.map(row).join(''):'')
      +(eds.length?`<div class="sec">Editors <span class="num">${eds.length}</span></div>`+eds.map(row).join(''):'');
+    const L=$('list');L.classList.remove('enter');void L.offsetWidth;L.classList.add('enter');
+    [...L.children].forEach((el,i)=>el.style.setProperty('--i',Math.min(i,30)));
   }
   paintRows();
   $('bulk').classList.remove('hide');$('manage').classList.remove('hide');
@@ -333,7 +371,7 @@ $('mlist').addEventListener('change',e=>{const id=e.target.dataset.roleId||e.tar
 /* sign-in */
 function startApp(){
   $('gate').classList.add('hide');$('app').classList.remove('hide');
-  render();load();
+  render();load();loadLogos();
   clearInterval(poll);poll=setInterval(()=>{if(!document.hidden&&!writing)load(true)},20000);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&token)load(true)});
 }
@@ -351,6 +389,125 @@ $('signout').onclick=()=>signOut();
 $('gEmail').value=store.get('yt4b-avail-email')||'';
 if(token)startApp();else setTimeout(()=>($('gEmail').value?$('gPass'):$('gEmail')).focus(),50);
 }
+</script>
+<script>
+// Styled dropdowns, the same component as the YT4B Pipeline Tracker
+// Every <select> keeps working as before (same value, same change events), but its open list is
+// drawn in the tracker's own style instead of the browser's grey system menu. Long lists get a
+// search box; channel lists show their logos. Touch screens keep the phone's own picker.
+(function () {
+  if (!window.matchMedia || !matchMedia("(pointer: fine)").matches) return;
+  let pop = null, cur = null, items = [], hi = -1;
+
+  function close() {
+    if (!pop) return;
+    pop.remove(); pop = null;
+    if (cur) { cur.classList.remove("ns-open"); cur.focus({ preventScroll: true }); }
+    cur = null; items = []; hi = -1;
+  }
+  function pick(i) {
+    const it = items[i]; if (!it || it.disabled) return;
+    const s = cur;
+    if (s.value !== it.value) {
+      s.value = it.value;
+      s.dispatchEvent(new Event("input", { bubbles: true }));
+      s.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+    close();
+  }
+  function setHi(i, scroll) {
+    const vis = items.filter(x => !x.hidden && !x.disabled);
+    if (!vis.length) { hi = -1; return; }
+    hi = i;
+    pop.querySelectorAll(".ns-o").forEach(el => el.classList.toggle("hi", +el.dataset.i === hi));
+    if (scroll) { const el = pop.querySelector(`.ns-o[data-i="${hi}"]`); el && el.scrollIntoView({ block: "nearest" }); }
+  }
+  function move(d) {
+    const vis = items.filter(x => !x.hidden && !x.disabled).map(x => x.i);
+    if (!vis.length) return;
+    const at = vis.indexOf(hi);
+    setHi(vis[at < 0 ? (d > 0 ? 0 : vis.length - 1) : Math.max(0, Math.min(vis.length - 1, at + d))], true);
+  }
+  function filter(q) {
+    q = q.trim().toLowerCase();
+    items.forEach(it => { it.hidden = !!q && !it.label.toLowerCase().includes(q); it.el.style.display = it.hidden ? "none" : ""; });
+    pop.querySelectorAll(".ns-g").forEach(g => {
+      let n = g.nextElementSibling, any = false;
+      while (n && !n.classList.contains("ns-g")) { if (n.style.display !== "none") any = true; n = n.nextElementSibling; }
+      g.style.display = any ? "" : "none";
+    });
+    const empty = pop.querySelector(".ns-empty"); if (empty) empty.style.display = items.some(x => !x.hidden) ? "none" : "";
+    const first = items.find(x => !x.hidden && !x.disabled); setHi(first ? first.i : -1, true);
+  }
+  function place() {
+    if (!pop || !cur) return;
+    const r = cur.getBoundingClientRect(), vh = window.innerHeight, vw = window.innerWidth;
+    const w = Math.max(r.width, 200);
+    pop.style.minWidth = w + "px";
+    pop.style.left = Math.max(8, Math.min(r.left, vw - pop.offsetWidth - 8)) + "px";
+    const below = vh - r.bottom - 12, above = r.top - 12;
+    const up = below < 220 && above > below;
+    const room = Math.max(160, Math.min(340, up ? above : below));
+    pop.querySelector(".ns-list").style.maxHeight = (room - (pop.querySelector(".ns-q") ? 46 : 8)) + "px";
+    pop.style.top = up ? Math.max(8, r.top - pop.offsetHeight - 6) + "px" : (r.bottom + 6) + "px";
+  }
+  function esc(t) { return String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+  function open(s) {
+    close();
+    cur = s; s.classList.add("ns-open");
+    const withLogo = s.classList.contains("chan") && typeof window.chLogo === "function";
+    const opts = [...s.options];
+    items = []; let html = "", lastGroup = null;
+    opts.forEach((o, i) => {
+      const g = o.parentElement && o.parentElement.tagName === "OPTGROUP" ? o.parentElement.label : null;
+      if (g !== lastGroup && g) html += `<div class="ns-g">${esc(g)}</div>`;
+      lastGroup = g;
+      const label = o.textContent, ph = o.value === "" && i === 0;
+      const lg = withLogo && !ph && o.value ? window.chLogo(o.value) : "";
+      html += `<div class="ns-o${o.selected ? " sel" : ""}${o.disabled ? " dis" : ""}${ph ? " ph" : ""}" data-i="${i}" role="option" aria-selected="${o.selected}">`
+        + `${lg}<span class="ns-t">${esc(label)}</span>${o.selected && !ph ? '<svg class="ns-ck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' : ""}</div>`;
+      items.push({ i, value: o.value, label, disabled: o.disabled, hidden: false });
+    });
+    const search = opts.length > 9;
+    pop = document.createElement("div");
+    pop.className = "ns-pop"; pop.setAttribute("role", "listbox");
+    pop.innerHTML = (search ? `<input class="ns-q" type="text" placeholder="Search…" aria-label="Search options">` : "")
+      + `<div class="ns-list">${html}<div class="ns-empty" style="display:none">No matches</div></div>`;
+    document.body.appendChild(pop);
+    pop.querySelectorAll(".ns-o").forEach(el => { items[+el.dataset.i].el = el; });
+    pop.addEventListener("mousedown", e => e.preventDefault());
+    pop.addEventListener("click", e => { const o = e.target.closest(".ns-o"); if (o) pick(+o.dataset.i); });
+    pop.addEventListener("mousemove", e => { const o = e.target.closest(".ns-o"); if (o && +o.dataset.i !== hi && !o.classList.contains("dis")) setHi(+o.dataset.i, false); });
+    const q = pop.querySelector(".ns-q");
+    if (q) { q.addEventListener("input", () => filter(q.value)); q.addEventListener("keydown", keys); q.addEventListener("mousedown", e => e.stopPropagation(), true); }
+    place();
+    setHi(s.selectedIndex >= 0 ? s.selectedIndex : 0, true);
+    if (q) q.focus({ preventScroll: true });
+  }
+  function keys(e) {
+    if (!pop) return;
+    if (e.key === "ArrowDown") { e.preventDefault(); move(1); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); move(-1); }
+    else if (e.key === "Enter") { e.preventDefault(); if (hi >= 0) pick(hi); }
+    else if (e.key === "Escape" || e.key === "Tab") { e.preventDefault(); close(); }
+  }
+  const usable = s => s && s.tagName === "SELECT" && !s.disabled && !s.multiple && !s.closest("[data-native]");
+  document.addEventListener("mousedown", e => {
+    const s = e.target.closest && e.target.closest("select");
+    if (usable(s)) { e.preventDefault(); s.focus({ preventScroll: true }); if (cur === s) close(); else open(s); return; }
+    if (pop && !pop.contains(e.target)) close();
+  }, true);
+  document.addEventListener("keydown", e => {
+    if (pop) {
+      if (e.target === cur || e.target.classList.contains("ns-q")) return e.target === cur ? keys(e) : undefined;
+      return;
+    }
+    const s = e.target;
+    if (usable(s) && (e.key === " " || e.key === "Enter" || e.key === "ArrowDown" || e.key === "ArrowUp") && !e.altKey) { e.preventDefault(); open(s); }
+  }, true);
+  window.addEventListener("resize", close);
+  document.addEventListener("scroll", e => { if (pop && !pop.contains(e.target)) close(); }, true);
+})();
 </script>
 </body>
 </html>
